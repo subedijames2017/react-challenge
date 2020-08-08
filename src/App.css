@@ -1,10 +1,19 @@
-.search {
-  margin-left: -33px;
-  width: 150px;
-}
 .banner-logo {
   position: absolute;
   width: 35px;
   top: 0;
   left: 39%;
+}
+.loader {
+  position: fixed;
+  bottom: 50%;
+  right: 50%;
+  z-index: 2;
+}
+.load-more-button {
+  position: absolute;
+  right: 50%;
+}
+.search {
+  width: 150px;
 }

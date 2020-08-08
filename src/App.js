@@ -3,7 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Container } from "react-bootstrap";
-import SearchPage from "./Components/SearchPage";
+import SearchPage from "./components/SearchPage";
 
 function App() {
   return (
