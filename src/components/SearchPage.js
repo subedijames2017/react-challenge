@@ -5,6 +5,7 @@ import Repositories from "./Repositories";
 import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getRepositories } from "../services/index";
+import Config from "../constants/config";
 
 function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,55 +16,67 @@ function SearchPage() {
   const [repositoryCount, setRepositoryCount] = useState(0);
   const [page, setPage] = useState(1);
 
-  const PAGINATION_LIMIT = 50;
   const handelSearchFieldChange = (event) => {
     setSearchQuery(event.target.value);
   };
   const handleSortChange = (event) => {
     if (event.target.value) {
       setSort(event.target.value);
+      // Empty repositories and repository count on sort change
+      setRepositories([]);
+      setRepositoryCount(0);
     }
   };
   const handleOrderChange = (event) => {
     if (event.target.value) {
       setOrder(event.target.value);
+      // Empty repositories and repository count on order change
+      setRepositories([]);
+      setRepositoryCount(0);
     }
   };
   const handleLoadMore = (event) => {
     event.preventDefault();
     setLoading(true);
-    getRepositories(searchQuery, sort, order, page + 1)
-      .then((response) => {
-        let newRepositories = [...repositories, ...response.data.items];
-        console.log("handleLoadMore -> newRepositories", newRepositories);
-        if (response && response.data.items && response.data.items.length) {
-          setRepositories(newRepositories);
-          setRepositoryCount(response.data.total_count);
-        }
-        setLoading(false);
-        setPage(page + 1);
-      })
-      .catch((err) => {
-        console.log("handelSearchRepostories -> err", err);
-      });
+    // Check if dom is loading
+    if (!loading) {
+      getRepositories(searchQuery, sort, order, page + 1)
+        .then((response) => {
+          let newRepositories = [...repositories, ...response.data.items];
+          if (response && response.data.items && response.data.items.length) {
+            setRepositories(newRepositories);
+            setRepositoryCount(response.data.total_count);
+          }
+          setLoading(false);
+          setPage(page + 1);
+        })
+        .catch((err) => {
+          console.log("handelSearchRepostories -> err", err);
+        });
+    }
   };
   const handelSearchRepostories = (event) => {
     event.preventDefault();
     setLoading(true);
-    getRepositories(searchQuery, sort, order, page)
-      .then((response) => {
-        if (response && response.data.items && response.data.items.length) {
-          setRepositories(response.data.items);
-          setRepositoryCount(response.data.total_count);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log("handelSearchRepostories -> err", err);
-      });
+    // Check if dom is loading
+    if (!loading) {
+      getRepositories(searchQuery, sort, order, page)
+        .then((response) => {
+          console.log("handelSearchRepostories -> response", response);
+          if (response && response.data.items && response.data.items.length) {
+            setRepositories(response.data.items);
+            setRepositoryCount(response.data.total_count);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log("handelSearchRepostories -> err", err);
+        });
+    }
   };
   let loadingElement = [];
   let loadMoreButton = [];
+  // Check if loading is enabled or not
   if (loading) {
     loadingElement.push(
       <Spinner
@@ -75,9 +88,12 @@ function SearchPage() {
       />
     );
   }
-  console.log("SearchPage -> repositoryCount", repositoryCount);
 
-  if (repositoryCount > 0 && page <= repositoryCount / PAGINATION_LIMIT + 1) {
+  // Checking repositoryCount and pagination limit to display load more button
+  if (
+    repositoryCount > Config.PAGINATION_LIMIT &&
+    page < repositoryCount / Config.PAGINATION_LIMIT
+  ) {
     loadMoreButton.push(
       <Button
         className="load-more-button mt-4"

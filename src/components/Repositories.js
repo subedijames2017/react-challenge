@@ -26,7 +26,10 @@ export default function Repositories({ repository, index }) {
           </Row>
           <Row className="mt-1">
             <Col>
-              {repository.description}, updated: {repository.updated_at}
+              {repository.description}{" "}
+              <p className="font-italic font-weight-bold">
+                updated: {repository.updated_at}
+              </p>
             </Col>
           </Row>
         </ListGroup.Item>
