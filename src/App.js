@@ -3,7 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Container } from "react-bootstrap";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 // Components
 import SearchPage from "./components/SearchPage";
 import Details from "./components/Details";

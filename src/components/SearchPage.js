@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { ReactComponent as GithubLogo } from "../github.svg";
 import Repositories from "./Repositories";
@@ -6,49 +6,65 @@ import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getRepositories } from "../services/index";
 import Config from "../constants/config";
+import { useSelector, useDispatch } from "react-redux";
 
 function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [repositories, setRepositories] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState("");
-  const [order, setOrder] = useState("desc");
-  const [repositoryCount, setRepositoryCount] = useState(0);
-  const [page, setPage] = useState(1);
+  // Search data from searchState reducer store
+  const searchString = useSelector((state) => state.searchState.searchString);
+  const repositories = useSelector((state) => state.searchState.list);
+  const loading = useSelector((state) => state.searchState.loading);
+  const repositoryCount = useSelector((state) => state.searchState.count);
+  const sort = useSelector((state) => state.searchState.sort);
+  const order = useSelector((state) => state.searchState.order);
+  const page = useSelector((state) => state.searchState.page);
+
+  const dispatch = useDispatch();
 
   const handelSearchFieldChange = (event) => {
-    setSearchQuery(event.target.value);
+    let newChange = {
+      searchString: event.target.value,
+    };
+    dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
   };
   const handleSortChange = (event) => {
     if (event.target.value) {
-      setSort(event.target.value);
-      // Empty repositories and repository count on sort change
-      setRepositories([]);
-      setRepositoryCount(0);
+      let newChange = {
+        sort: event.target.value,
+        list: [], // Empty repositories and repository count on sort change
+        count: 0,
+      };
+      dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
     }
   };
   const handleOrderChange = (event) => {
     if (event.target.value) {
-      setOrder(event.target.value);
-      // Empty repositories and repository count on order change
-      setRepositories([]);
-      setRepositoryCount(0);
+      let newChange = {
+        order: event.target.value,
+        list: [], // Empty repositories and repository count on sort change
+        count: 0,
+      };
+      dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
     }
   };
+
   const handleLoadMore = (event) => {
     event.preventDefault();
-    setLoading(true);
+    dispatch({ type: "LOADING", payload: { loading: true } });
     // Check if dom is loading
     if (!loading) {
-      getRepositories(searchQuery, sort, order, page + 1)
+      getRepositories(searchString, sort, order, page + 1)
         .then((response) => {
           let newRepositories = [...repositories, ...response.data.items];
           if (response && response.data.items && response.data.items.length) {
-            setRepositories(newRepositories);
-            setRepositoryCount(response.data.total_count);
+            let newChange = {
+              list: newRepositories, // Empty repositories and repository count on sort change
+              count: response.data.total_count,
+              loading: false,
+              page: page + 1,
+            };
+            dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
+            dispatch({ type: "LOADING", payload: { loading: false } });
           }
-          setLoading(false);
-          setPage(page + 1);
         })
         .catch((err) => {
           console.log("handelSearchRepostories -> err", err);
@@ -57,17 +73,21 @@ function SearchPage() {
   };
   const handelSearchRepostories = (event) => {
     event.preventDefault();
-    setLoading(true);
+    dispatch({ type: "LOADING", payload: { loading: true } });
     // Check if dom is loading
     if (!loading) {
-      getRepositories(searchQuery, sort, order, page)
+      getRepositories(searchString, sort, order, page)
         .then((response) => {
           console.log("handelSearchRepostories -> response", response);
           if (response && response.data.items && response.data.items.length) {
-            setRepositories(response.data.items);
-            setRepositoryCount(response.data.total_count);
+            let newChange = {
+              list: response.data.items, // Empty repositories and repository count on sort change
+              count: response.data.total_count,
+              loading: false,
+              page: page + 1,
+            };
+            dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
           }
-          setLoading(false);
         })
         .catch((err) => {
           console.log("handelSearchRepostories -> err", err);
@@ -120,7 +140,7 @@ function SearchPage() {
                 required
                 className="mt-4 search-input"
                 onChange={handelSearchFieldChange}
-                value={searchQuery}
+                value={searchString}
               />
             </Form.Group>
           </Col>

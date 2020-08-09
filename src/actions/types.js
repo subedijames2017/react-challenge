@@ -1,2 +1,5 @@
 export const FETCH_REPOSITORIES = "FETCH_REPOSITORIES";
+export const LOAD_REPOSITORIES = "LOAD_REPOSITORIES";
 export const FETCH_USER = "FETCH_USER";
+export const LOADING = "LOADING";
+export const ERROR = "ERROR";
