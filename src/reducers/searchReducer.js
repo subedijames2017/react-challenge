@@ -1,4 +1,9 @@
-import { FETCH_REPOSITORIES, FETCH_USER, LOADING } from "../actions/types";
+import {
+  FETCH_REPOSITORIES,
+  FETCH_USER,
+  SEARCH_LOADING,
+  LOADING,
+} from "../actions/types";
 
 const initialState = {
   searchString: "",
@@ -37,7 +42,7 @@ export default function (state = initialState, action) {
           ? action.payload.page
           : state.page,
       };
-    case LOADING:
+    case SEARCH_LOADING:
       return {
         ...state,
         loading: action.payload.loading,

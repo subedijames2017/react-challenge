@@ -49,7 +49,7 @@ function SearchPage() {
 
   const handleLoadMore = (event) => {
     event.preventDefault();
-    dispatch({ type: "LOADING", payload: { loading: true } });
+    dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
     // Check if dom is loading
     if (!loading) {
       getRepositories(searchString, sort, order, page + 1)
@@ -63,7 +63,7 @@ function SearchPage() {
               page: page + 1,
             };
             dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-            dispatch({ type: "LOADING", payload: { loading: false } });
+            dispatch({ type: "SEARCH_LOADING", payload: { loading: false } });
           }
         })
         .catch((err) => {
@@ -73,10 +73,10 @@ function SearchPage() {
   };
   const handelSearchRepostories = (event) => {
     event.preventDefault();
-    dispatch({ type: "LOADING", payload: { loading: true } });
+    dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
     // Check if dom is loading
     if (!loading) {
-      getRepositories(searchString, sort, order, page)
+      getRepositories(searchString, sort, order, 1)
         .then((response) => {
           console.log("handelSearchRepostories -> response", response);
           if (response && response.data.items && response.data.items.length) {
@@ -84,7 +84,7 @@ function SearchPage() {
               list: response.data.items, // Empty repositories and repository count on sort change
               count: response.data.total_count,
               loading: false,
-              page: page + 1,
+              page: 1,
             };
             dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
           }

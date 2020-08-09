@@ -1,4 +1,4 @@
-import { FETCH_USER, LOADING } from "../actions/types";
+import { FETCH_USER, LOADING, USER_LOADING } from "../actions/types";
 
 const initialState = {
   user: null,
@@ -17,7 +17,7 @@ export default function (state = initialState, action) {
           ? action.payload.loading
           : state.loading,
       };
-    case LOADING:
+    case USER_LOADING:
       return {
         ...state,
         loading: action.payload.loading,
