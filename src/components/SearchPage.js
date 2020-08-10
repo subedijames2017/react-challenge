@@ -78,7 +78,6 @@ function SearchPage() {
     if (!loading) {
       getRepositories(searchString, sort, order, 1)
         .then((response) => {
-          console.log("handelSearchRepostories -> response", response);
           if (response && response.data.items && response.data.items.length) {
             let newChange = {
               list: response.data.items, // Empty repositories and repository count on sort change
@@ -190,4 +189,4 @@ function SearchPage() {
   );
 }
 
-export default SearchPage;
+export default React.memo(SearchPage);

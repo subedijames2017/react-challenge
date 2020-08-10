@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function Repositories({ repository, index }) {
   return (
-    <div key={index} className="mt-1">
+    <div className="mt-1" key={index}>
       <ListGroup>
         <Link
           to={{

@@ -18,6 +18,14 @@
   width: 150px;
 }
 a:hover {
-  color: black;
+  color: #212529 !important;
   text-decoration: none !important;
+}
+.link-tag {
+  color: #212529 !important;
+  text-decoration: none !important;
+}
+.readme {
+  margin: 20px;
+  padding: 20px;
 }

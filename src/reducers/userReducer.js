@@ -3,6 +3,7 @@ import { FETCH_USER, LOADING, USER_LOADING } from "../actions/types";
 const initialState = {
   user: null,
   loading: false,
+  readme: null,
 };
 
 export default function (state = initialState, action) {
@@ -16,6 +17,9 @@ export default function (state = initialState, action) {
         loading: action.payload.hasOwnProperty("loading")
           ? action.payload.loading
           : state.loading,
+        readme: action.payload.hasOwnProperty("readme")
+          ? action.payload.readme
+          : state.readme,
       };
     case USER_LOADING:
       return {
