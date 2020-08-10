@@ -1,17 +1,9 @@
 import React, { useEffect } from "react";
 import { getUser, getReadme } from "../services/index";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Spinner,
-  Container,
-  Col,
-  Image,
-  Row,
-  ListGroup,
-  Button,
-} from "react-bootstrap";
+import { Spinner, Container, Col, Image, Row } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
-import { faLongArrowAltLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
@@ -73,13 +65,13 @@ function Details(props) {
       />
     );
   }
-  if (user) {
+  if (user && repository) {
     displayContent.push(
       <Container>
         <Row>
           <Link to="/" className="text-info">
             <FontAwesomeIcon
-              icon={faLongArrowAltLeft}
+              icon={faArrowCircleLeft}
               className="back"
               size="2x"
             />

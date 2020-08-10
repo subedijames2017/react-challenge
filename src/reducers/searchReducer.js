@@ -1,9 +1,4 @@
-import {
-  FETCH_REPOSITORIES,
-  FETCH_USER,
-  SEARCH_LOADING,
-  LOADING,
-} from "../actions/types";
+import { FETCH_REPOSITORIES, SEARCH_LOADING } from "../actions/types";
 
 const initialState = {
   searchString: "",

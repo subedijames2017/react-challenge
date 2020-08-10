@@ -1,4 +1,4 @@
-import { FETCH_USER, LOADING, USER_LOADING } from "../actions/types";
+import { FETCH_USER, USER_LOADING } from "../actions/types";
 
 const initialState = {
   user: null,
