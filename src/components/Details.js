@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 function Details(props) {
   let repository = props.history.location.repository;
   let login = props.login;
+  // Rendering user to search page if no reposetory information passed
   if (!repository) {
     props.history.push("/");
   }
@@ -20,6 +21,7 @@ function Details(props) {
 
   useEffect(() => {
     dispatch({ type: "USER_LOADING", payload: { loading: true } });
+    // Get user information for full name
     getUser(login)
       .then((userResp) => {
         if (userResp && userResp.data) {
@@ -28,6 +30,7 @@ function Details(props) {
             loading: false,
             readme: null,
           };
+          // Get readme content
           getReadme(repository.owner.login, repository.name)
             .then((repositoryResponse) => {
               if (repositoryResponse.data) {
@@ -36,6 +39,8 @@ function Details(props) {
               dispatch({ type: "FETCH_USER", payload: newChange });
             })
             .catch((repositoryError) => {
+              console.log("Details -> repositoryError", repositoryError);
+              // Reposetories with no readme file are throwing 404 error so have to dispatching on error
               dispatch({ type: "FETCH_USER", payload: newChange });
             });
         }
@@ -117,4 +122,5 @@ function Details(props) {
   }
   return <div>{displayContent}</div>;
 }
+// Using react memo to avoid multipe render
 export default React.memo(Details);

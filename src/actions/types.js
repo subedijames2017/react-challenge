@@ -3,4 +3,4 @@ export const LOAD_REPOSITORIES = "LOAD_REPOSITORIES";
 export const FETCH_USER = "FETCH_USER";
 export const SEARCH_LOADING = "SEARCH_LOADING";
 export const USER_LOADING = "USER_LOADING";
-export const ERROR = "ERROR";
+export const GET_ERROR = "GET_ERROR";

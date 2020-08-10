@@ -17,7 +17,7 @@ function SearchPage() {
   const sort = useSelector((state) => state.searchState.sort);
   const order = useSelector((state) => state.searchState.order);
   const page = useSelector((state) => state.searchState.page);
-
+  const error = useSelector((state) => state.errorState.error);
   const dispatch = useDispatch();
 
   const handelSearchFieldChange = (event) => {
@@ -74,7 +74,7 @@ function SearchPage() {
   const handelSearchRepostories = (event) => {
     event.preventDefault();
     dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
-    // Check if dom is loading
+    // Check if DOM is loading
     if (!loading) {
       getRepositories(searchString, sort, order, 1)
         .then((response) => {
@@ -89,7 +89,11 @@ function SearchPage() {
           }
         })
         .catch((err) => {
-          console.log("handelSearchRepostories -> err", err);
+          let error = { message: "error while geting reposetories" };
+          dispatch({
+            type: "GET_ERROR",
+            payload: error,
+          });
         });
     }
   };
@@ -180,6 +184,7 @@ function SearchPage() {
             </Button>
           </Col>
         </Row>
+        {error && <p className="text-center text-danger mt-3">{error}</p>}
       </Form>
       {repositories.map((repository, index) => (
         <Repositories repository={repository} index={index} />
@@ -189,4 +194,5 @@ function SearchPage() {
   );
 }
 
+// Using react memo to avoid multipe render
 export default React.memo(SearchPage);
