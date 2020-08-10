@@ -9,7 +9,9 @@ export default function (state = initialState, action) {
     case GET_ERROR:
       return {
         ...state,
-        error: action.payload.message,
+        error: action.payload.hasOwnProperty("error")
+          ? action.payload.searchString
+          : state.searchString,
       };
     default:
       return state;

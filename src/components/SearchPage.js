@@ -13,7 +13,7 @@ function SearchPage() {
   const searchString = useSelector((state) => state.searchState.searchString);
   const repositories = useSelector((state) => state.searchState.list);
   const loading = useSelector((state) => state.searchState.loading);
-  const repositoryCount = useSelector((state) => state.searchState.count);
+  const count = useSelector((state) => state.searchState.count);
   const sort = useSelector((state) => state.searchState.sort);
   const order = useSelector((state) => state.searchState.order);
   const page = useSelector((state) => state.searchState.page);
@@ -34,6 +34,10 @@ function SearchPage() {
         count: 0,
       };
       dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
+      dispatch({
+        type: "GET_ERROR",
+        payload: { error: null },
+      });
     }
   };
   const handleOrderChange = (event) => {
@@ -44,6 +48,10 @@ function SearchPage() {
         count: 0,
       };
       dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
+      dispatch({
+        type: "GET_ERROR",
+        payload: { error: null },
+      });
     }
   };
 
@@ -63,11 +71,18 @@ function SearchPage() {
               page: page + 1,
             };
             dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-            dispatch({ type: "SEARCH_LOADING", payload: { loading: false } });
+            dispatch({
+              type: "GET_ERROR",
+              payload: { error: null },
+            });
           }
         })
         .catch((err) => {
-          console.log("handelSearchRepostories -> err", err);
+          let error = { message: "error while geting reposetories" };
+          dispatch({
+            type: "GET_ERROR",
+            payload: error,
+          });
         });
     }
   };
@@ -86,6 +101,10 @@ function SearchPage() {
               page: 1,
             };
             dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
+            dispatch({
+              type: "GET_ERROR",
+              payload: { error: null },
+            });
           }
         })
         .catch((err) => {
@@ -112,10 +131,10 @@ function SearchPage() {
     );
   }
 
-  // Checking repositoryCount and pagination limit to display load more button
+  // Checking count and pagination limit to display load more button
   if (
-    repositoryCount > Config.PAGINATION_LIMIT &&
-    page < repositoryCount / Config.PAGINATION_LIMIT
+    count > Config.PAGINATION_LIMIT &&
+    page < count / Config.PAGINATION_LIMIT
   ) {
     loadMoreButton.push(
       <Button
@@ -185,6 +204,11 @@ function SearchPage() {
           </Col>
         </Row>
         {error && <p className="text-center text-danger mt-3">{error}</p>}
+        {count > 0 && (
+          <p className="text-center text-info mt-3">
+            {count} reposetories found.{" "}
+          </p>
+        )}
       </Form>
       {repositories.map((repository, index) => (
         <Repositories repository={repository} index={index} />
