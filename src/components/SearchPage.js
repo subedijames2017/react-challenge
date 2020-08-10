@@ -44,7 +44,7 @@ function SearchPage() {
     if (event.target.value) {
       let newChange = {
         order: event.target.value,
-        list: [], // Empty repositories and repository count on sort change
+        list: [], // Empty repositories and repository count on order change
         count: 0,
       };
       dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
@@ -58,14 +58,15 @@ function SearchPage() {
   const handleLoadMore = (event) => {
     event.preventDefault();
     dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
-    // Check if dom is loading
+    // Check if DOM is loading
     if (!loading) {
       getRepositories(searchString, sort, order, page + 1)
         .then((response) => {
+          // Append incoming reposetories with existing reposetories on load more 
           let newRepositories = [...repositories, ...response.data.items];
           if (response && response.data.items && response.data.items.length) {
             let newChange = {
-              list: newRepositories, // Empty repositories and repository count on sort change
+              list: newRepositories,
               count: response.data.total_count,
               loading: false,
               page: page + 1,
@@ -95,7 +96,7 @@ function SearchPage() {
         .then((response) => {
           if (response && response.data.items && response.data.items.length) {
             let newChange = {
-              list: response.data.items, // Empty repositories and repository count on sort change
+              list: response.data.items, 
               count: response.data.total_count,
               loading: false,
               page: 1,

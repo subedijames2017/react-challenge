@@ -40,7 +40,7 @@ function Details(props) {
             })
             .catch((repositoryError) => {
               console.log("Details -> repositoryError", repositoryError);
-              // Reposetories with no readme file are throwing 404 error so have to dispatching on error
+              // Reposetories with no readme file are throwing 404 error so dispatching on error
               dispatch({ type: "FETCH_USER", payload: newChange });
             });
         }
@@ -122,5 +122,5 @@ function Details(props) {
   }
   return <div>{displayContent}</div>;
 }
-// Using react memo to avoid multipe render
+// Using react memo to avoid multiple render
 export default React.memo(Details);
