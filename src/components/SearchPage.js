@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { ReactComponent as GithubLogo } from "../github.svg";
 import Repositories from "./Repositories";
@@ -6,130 +6,99 @@ import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getRepositories } from "../services/index";
 import Config from "../constants/config";
-import { useSelector, useDispatch } from "react-redux";
 
 function SearchPage() {
-  // Search data from searchState reducer store
-  const searchString = useSelector((state) => state.searchState.searchString);
-  const repositories = useSelector((state) => state.searchState.list);
-  const loading = useSelector((state) => state.searchState.loading);
-  const count = useSelector((state) => state.searchState.count);
-  const sort = useSelector((state) => state.searchState.sort);
-  const order = useSelector((state) => state.searchState.order);
-  const page = useSelector((state) => state.searchState.page);
-  const error = useSelector((state) => state.errorState.error);
-  const dispatch = useDispatch();
+  // Initialize states
+  const [searchString, setSearchString] = useState("");
+  // Compining releted information to avoid multiple rendering
+  const [searchReposetories, setSearchReposetories] = useState({
+    loading: false,
+    repositories: [],
+    count: 0,
+    page: 1,
+    error: null,
+  });
+  const [sort, setSort] = useState("");
+  const [order, setOrder] = useState("desc");
+  // Destructring releted ingormation from searchReposetories
+  const { loading, repositories, count, page, error } = searchReposetories;
+  console.log("SearchPage -> repositories", repositories);
 
-  const handelSearchFieldChange = (event) => {
-    let newChange = {
-      searchString: event.target.value,
-    };
-    dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-  };
-  const handleSortChange = (event) => {
-    if (event.target.value) {
-      let newChange = {
-        sort: event.target.value,
-        list: [], // Empty repositories and repository count on sort change
-        count: 0,
-      };
-      dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-      dispatch({
-        type: "GET_ERROR",
-        payload: { error: null },
-      });
-    }
-  };
-  const handleOrderChange = (event) => {
-    if (event.target.value) {
-      let newChange = {
-        order: event.target.value,
-        list: [], // Empty repositories and repository count on order change
-        count: 0,
-      };
-      dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-      dispatch({
-        type: "GET_ERROR",
-        payload: { error: null },
-      });
+  const handelSearchRepostories = (event) => {
+    event.preventDefault();
+    setSearchReposetories({
+      ...searchReposetories,
+      loading: true,
+    });
+    // Check if DOM is loading
+    if (!loading) {
+      getRepositories(searchString, sort, order, 1)
+        .then((response) => {
+          console.log("handelSearchRepostories -> response", response);
+          if (response.data.items.length) {
+            setSearchReposetories({
+              ...searchReposetories,
+              loading: false,
+              repositories: response.data.items,
+              count: response.data.total_count,
+            });
+          }
+        })
+        .catch((err) => {
+          setSearchReposetories({
+            ...searchReposetories,
+            loading: false,
+            error: "error while geting reposetories",
+          });
+        });
     }
   };
 
   const handleLoadMore = (event) => {
     event.preventDefault();
-    dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
+    setSearchReposetories({
+      ...searchReposetories,
+      loading: true,
+    });
     // Check if DOM is loading
     if (!loading) {
       getRepositories(searchString, sort, order, page + 1)
         .then((response) => {
-          // Append incoming reposetories with existing reposetories on load more 
+          // Append incoming reposetories with existing reposetories on load more
           let newRepositories = [...repositories, ...response.data.items];
-          if (response && response.data.items && response.data.items.length) {
-            let newChange = {
-              list: newRepositories,
-              count: response.data.total_count,
+          if (response.data.items.length) {
+            setSearchReposetories({
+              ...searchReposetories,
               loading: false,
+              repositories: newRepositories,
+              count: response.data.total_count,
               page: page + 1,
-            };
-            dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-            dispatch({
-              type: "GET_ERROR",
-              payload: { error: null },
             });
           }
         })
         .catch((err) => {
-          let error = { message: "error while geting reposetories" };
-          dispatch({
-            type: "GET_ERROR",
-            payload: error,
+          setSearchReposetories({
+            ...searchReposetories,
+            loading: false,
+            error: "error while geting reposetories",
           });
         });
     }
   };
-  const handelSearchRepostories = (event) => {
-    event.preventDefault();
-    dispatch({ type: "SEARCH_LOADING", payload: { loading: true } });
-    // Check if DOM is loading
-    if (!loading) {
-      getRepositories(searchString, sort, order, 1)
-        .then((response) => {
-          if (response && response.data.items && response.data.items.length) {
-            let newChange = {
-              list: response.data.items, 
-              count: response.data.total_count,
-              loading: false,
-              page: 1,
-            };
-            dispatch({ type: "FETCH_REPOSITORIES", payload: newChange });
-            dispatch({
-              type: "GET_ERROR",
-              payload: { error: null },
-            });
-          }
-        })
-        .catch((err) => {
-          let error = { message: "error while geting reposetories" };
-          dispatch({
-            type: "GET_ERROR",
-            payload: error,
-          });
-        });
-    }
-  };
+
   let loadingElement = [];
   let loadMoreButton = [];
   // Check if loading is enabled or not
   if (loading) {
-    loadingElement.push(
+    loadingElement = [
       <Spinner
         animation="grow"
         variant="danger"
         height="100"
         className="loader"
         aria-hidden="true"
-      />
-    );
+      />,
+    ];
   }
 
   // Checking count and pagination limit to display load more button
@@ -137,7 +106,7 @@ function SearchPage() {
     count > Config.PAGINATION_LIMIT &&
     page < count / Config.PAGINATION_LIMIT
   ) {
-    loadMoreButton.push(
+    loadMoreButton = [
       <Button
         className="load-more-button mt-4"
         type="submit"
@@ -145,9 +114,10 @@ function SearchPage() {
         onClick={handleLoadMore}
       >
         <FontAwesomeIcon icon={faSyncAlt} /> Load more
-      </Button>
-    );
+      </Button>,
+    ];
   }
+
   return (
     <div>
       <GithubLogo className="banner-logo" />
@@ -162,7 +132,7 @@ function SearchPage() {
                 placeholder="Search for repository"
                 required
                 className="mt-4 search-input"
-                onChange={handelSearchFieldChange}
+                onChange={(e) => setSearchString(e.target.value)}
                 value={searchString}
               />
             </Form.Group>
@@ -173,7 +143,7 @@ function SearchPage() {
                 as="select"
                 custom
                 className="mt-4 sort"
-                onChange={handleSortChange}
+                onChange={(e) => setSort(e.target.value)}
               >
                 <option>Sort by</option>
                 <option value="stars">Star</option>
@@ -189,7 +159,7 @@ function SearchPage() {
                 as="select"
                 custom
                 className="mt-4 order"
-                onChange={handleOrderChange}
+                onChange={(e) => setOrder(e.target.value)}
               >
                 <option value="desc" defaultValue>
                   Order by descending
@@ -207,13 +177,15 @@ function SearchPage() {
         {error && <p className="text-center text-danger mt-3">{error}</p>}
         {count > 0 && (
           <p className="text-center text-info mt-3">
-            {count} reposetories found.{" "}
+            {count} reposetories found
           </p>
         )}
       </Form>
-      {repositories.map((repository, index) => (
-        <Repositories repository={repository} index={index} />
-      ))}
+
+      {searchReposetories.repositories &&
+        searchReposetories.repositories.map((repository, index) => (
+          <Repositories repository={repository} index={index} />
+        ))}
       <div className="load-more">{loadMoreButton}</div>
     </div>
   );

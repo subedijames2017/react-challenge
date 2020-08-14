@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getUser, getReadme } from "../services/index";
-import { useSelector, useDispatch } from "react-redux";
 import { Spinner, Container, Col, Image, Row } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -9,39 +8,40 @@ import { Link } from "react-router-dom";
 
 function Details(props) {
   let repository = props.history.location.repository;
-  let login = props.login;
+  let userName = props.login;
   // Rendering user to search page if no reposetory information passed
   if (!repository) {
     props.history.push("/");
   }
-  const user = useSelector((state) => state.userState.user);
-  const loading = useSelector((state) => state.userState.loading);
-  const readme = useSelector((state) => state.userState.readme);
-  const dispatch = useDispatch();
+  // Compining releted information to avoid multiple rendering
+  const [userInformation, settUserInformation] = useState({
+    loading: false,
+    user: null,
+  });
+  const [readme, setReadme] = useState("");
+  const { loading, user } = userInformation;
 
   useEffect(() => {
-    dispatch({ type: "USER_LOADING", payload: { loading: true } });
+    settUserInformation({
+      ...userInformation,
+      loading: true,
+    });
     // Get user information for full name
-    getUser(login)
+    getUser(userName)
       .then((userResp) => {
-        if (userResp && userResp.data) {
-          let newChange = {
-            user: userResp.data,
+        if (userResp.data) {
+          settUserInformation({
             loading: false,
-            readme: null,
-          };
+            user: userResp.data,
+          });
           // Get readme content
-          getReadme(repository.owner.login, repository.name)
+          getReadme(userName, repository.name)
             .then((repositoryResponse) => {
               if (repositoryResponse.data) {
-                newChange["readme"] = repositoryResponse.data;
+                setReadme(repositoryResponse.data);
               }
-              dispatch({ type: "FETCH_USER", payload: newChange });
             })
             .catch((repositoryError) => {
-              console.log("Details -> repositoryError", repositoryError);
-              // Reposetories with no readme file are throwing 404 error so dispatching on error
-              dispatch({ type: "FETCH_USER", payload: newChange });
             });
         }
       })
@@ -50,28 +50,26 @@ function Details(props) {
       });
     // Clear user after unmount
     return () => {
-      let newChange = {
-        user: null,
+      settUserInformation({
         loading: false,
-        readme: null,
-      };
-      dispatch({ type: "FETCH_USER", payload: newChange });
+        user: null,
+      });
     };
   }, []);
   let displayContent = [];
   // Checking repositoryCount and pagination limit to display load more button
   if (loading || !user) {
-    displayContent.push(
+    displayContent = [
       <Spinner
         animation="grow"
         variant="danger"
         className="loader"
         aria-hidden="true"
-      />
-    );
+      />,
+    ];
   }
   if (user && repository) {
-    displayContent.push(
+    displayContent = [
       <Container>
         <Row>
           <Link to="/" className="text-info">
@@ -117,8 +115,8 @@ function Details(props) {
             </Row>
           </div>
         )}
-      </Container>
-    );
+      </Container>,
+    ];
   }
   return <div>{displayContent}</div>;
 }

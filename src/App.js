@@ -8,12 +8,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import SearchPage from "./components/SearchPage";
 import Details from "./components/Details";
 
-import { Provider } from "react-redux";
-import store from "./store";
-
 function App() {
   return (
-    <Provider store={store}>
       <Container>
         <Router>
           <Route exact path="/" component={SearchPage} />
@@ -29,7 +25,6 @@ function App() {
           />
         </Router>
       </Container>
-    </Provider>
   );
 }
 
