@@ -12,7 +12,7 @@ describe("SearchPage", () => {
     const input = wrapper.find(".search-page");
     expect(input.length).toBe(1);
   });
-  it("renders Child component", () => {
+  it("Renders Child component", () => {
     const wrapper = shallow(<SearchPage />);
     expect(wrapper.find(Form)).toHaveLength(1);
     expect(wrapper.find(Button)).toHaveLength(1);

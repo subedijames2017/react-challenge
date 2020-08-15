@@ -117,7 +117,7 @@ let repository = {
 };
 
 describe("Details", () => {
-  it("Check if Detail component is rendering after passing props", () => {
+  it("Check if Details component is rendering", () => {
     const wrapper = shallow(
       <Details userName={userName} repository={repository} />
     );

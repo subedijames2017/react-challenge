@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useHistory } from "react-router-dom";
 
 function Details({ userName, repository }) {
-  // Rendering user to search page if no reposetory information passed
+  // Rendering user to search page if no repository information passed
   const history = useHistory();
   if (!repository || !userName) {
     history.push("/");
@@ -32,6 +32,7 @@ function Details({ userName, repository }) {
         }));
       }
     } catch (error) {
+      // No error display for now
       console.log("fetchUserInformation -> error", error);
     }
   }
