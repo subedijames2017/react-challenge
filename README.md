@@ -2,13 +2,13 @@
 
 Web application based on React.js
 
-# Steps to setup blinqed on your machine
+## Steps to setup project on your machine
 
 - Clone the repository in your local machine.
-- Make sure you have installed node in your system.
+- Make sure you have installed node on your system.
 - Go to the project root directory and install all project dependencies with command.
   `npm install`
-- After the installation of all dependencies, start project by running.
+- After the installation of all dependencies , start project by running.
   `npm start`
 - Project will open automatically on your device browser with url.
   `http://localhost:3000`
