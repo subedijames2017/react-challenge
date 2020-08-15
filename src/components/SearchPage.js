@@ -46,7 +46,7 @@ function SearchPage() {
           setSearchReposetories((searchReposetories) => ({
             ...searchReposetories,
             loading: false,
-            error: "error while geting reposetories",
+            error: "Error while getting reposetories",
           }));
         });
     }
