@@ -10,21 +10,21 @@ import Details from "./components/Details";
 
 function App() {
   return (
-      <Container>
-        <Router>
-          <Route exact path="/" component={SearchPage} />
-          <Route
-            path={"/:login/"}
-            render={({ match, location, history }) => (
-              <Details
-                login={match.params.login}
-                repository={location.repository}
-                history={history}
-              />
-            )}
-          />
-        </Router>
-      </Container>
+    <Container>
+      <Router>
+        <Route exact path="/" component={SearchPage} />
+        <Route
+          path={"/:login/"}
+          render={({ match, location, history }) => (
+            <Details
+              userName={match.params.login}
+              repository={location.repository}
+              history={history}
+            />
+          )}
+        />
+      </Router>
+    </Container>
   );
 }
 

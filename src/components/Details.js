@@ -6,12 +6,10 @@ import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-function Details(props) {
-  let repository = props.history.location.repository;
-  let userName = props.login;
+function Details({ userName, repository, history }) {
   // Rendering user to search page if no reposetory information passed
   if (!repository) {
-    props.history.push("/");
+    history.push("/");
   }
   // Compining releted information to avoid multiple rendering
   const [userInformation, settUserInformation] = useState({
@@ -21,40 +19,34 @@ function Details(props) {
   const [readme, setReadme] = useState("");
   const { loading, user } = userInformation;
 
+  // fetch users information
+  async function fetchUerInformation() {
+    try {
+      const userResponse = await getUser(userName);
+      settUserInformation({
+        loading: false,
+        user: userResponse.data,
+      });
+    } catch (error) {
+      console.log("getUSerInformation -> error", error);
+    }
+  }
+  // fetch readme data for repository
+  async function fetchReadme() {
+    try {
+      const readmeResponse = await getReadme(userName, repository.name);
+      setReadme(readmeResponse.data);
+    } catch (error) {
+      console.log("getUSerInformation -> error", error);
+    }
+  }
   useEffect(() => {
     settUserInformation({
       ...userInformation,
       loading: true,
     });
-    // Get user information for full name
-    getUser(userName)
-      .then((userResp) => {
-        if (userResp.data) {
-          settUserInformation({
-            loading: false,
-            user: userResp.data,
-          });
-          // Get readme content
-          getReadme(userName, repository.name)
-            .then((repositoryResponse) => {
-              if (repositoryResponse.data) {
-                setReadme(repositoryResponse.data);
-              }
-            })
-            .catch((repositoryError) => {
-            });
-        }
-      })
-      .catch((err) => {
-        console.log("Details -> err", err);
-      });
-    // Clear user after unmount
-    return () => {
-      settUserInformation({
-        loading: false,
-        user: null,
-      });
-    };
+    fetchUerInformation();
+    fetchReadme();
   }, []);
   let displayContent = [];
   // Checking repositoryCount and pagination limit to display load more button

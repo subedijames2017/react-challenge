@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { ReactComponent as GithubLogo } from "../github.svg";
 import Repositories from "./Repositories";
@@ -22,7 +22,6 @@ function SearchPage() {
   const [order, setOrder] = useState("desc");
   // Destructring releted ingormation from searchReposetories
   const { loading, repositories, count, page, error } = searchReposetories;
-  console.log("SearchPage -> repositories", repositories);
 
   const handelSearchRepostories = (event) => {
     event.preventDefault();
@@ -34,32 +33,31 @@ function SearchPage() {
     if (!loading) {
       getRepositories(searchString, sort, order, 1)
         .then((response) => {
-          console.log("handelSearchRepostories -> response", response);
           if (response.data.items.length) {
-            setSearchReposetories({
+            setSearchReposetories((searchReposetories) => ({
               ...searchReposetories,
               loading: false,
               repositories: response.data.items,
               count: response.data.total_count,
-            });
+            }));
           }
         })
         .catch((err) => {
-          setSearchReposetories({
+          setSearchReposetories((searchReposetories) => ({
             ...searchReposetories,
             loading: false,
             error: "error while geting reposetories",
-          });
+          }));
         });
     }
   };
 
   const handleLoadMore = (event) => {
     event.preventDefault();
-    setSearchReposetories({
+    setSearchReposetories((searchReposetories) => ({
       ...searchReposetories,
       loading: true,
-    });
+    }));
     // Check if DOM is loading
     if (!loading) {
       getRepositories(searchString, sort, order, page + 1)
@@ -67,21 +65,21 @@ function SearchPage() {
           // Append incoming reposetories with existing reposetories on load more
           let newRepositories = [...repositories, ...response.data.items];
           if (response.data.items.length) {
-            setSearchReposetories({
+            setSearchReposetories((searchReposetories) => ({
               ...searchReposetories,
               loading: false,
               repositories: newRepositories,
               count: response.data.total_count,
               page: page + 1,
-            });
+            }));
           }
         })
         .catch((err) => {
-          setSearchReposetories({
+          setSearchReposetories((searchReposetories) => ({
             ...searchReposetories,
             loading: false,
             error: "error while geting reposetories",
-          });
+          }));
         });
     }
   };
