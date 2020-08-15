@@ -24,10 +24,12 @@ function Details({ userName, repository, history }) {
   async function fetchUserInformation() {
     try {
       const userResponse = await getUser(userName);
-      setUserInformation((userInformation) => ({
-        loading: false,
-        user: userResponse.data,
-      }));
+      if (userResponse.data) {
+        setUserInformation((userInformation) => ({
+          loading: false,
+          user: userResponse.data,
+        }));
+      }
     } catch (error) {
       console.log("fetchUserInformation -> error", error);
     }
@@ -36,7 +38,9 @@ function Details({ userName, repository, history }) {
   async function fetchReadme() {
     try {
       const readmeResponse = await getReadme(userName, repository.name);
-      setReadme(readmeResponse.data);
+      if (readmeResponse.data) {
+        setReadme(readmeResponse.data);
+      }
     } catch (error) {
       console.log("fetchReadme -> error", error);
     }
