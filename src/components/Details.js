@@ -11,41 +11,42 @@ function Details({ userName, repository, history }) {
   if (!repository) {
     history.push("/");
   }
-  // Compining releted information to avoid multiple rendering
-  const [userInformation, settUserInformation] = useState({
+  const [userInformation, setUserInformation] = useState({
     loading: false,
     user: null,
   });
   const [readme, setReadme] = useState("");
+
+  // Destructuring user information
   const { loading, user } = userInformation;
 
-  // fetch users information
-  async function fetchUerInformation() {
+  // Fetch user information
+  async function fetchUserInformation() {
     try {
       const userResponse = await getUser(userName);
-      settUserInformation({
+      setUserInformation((userInformation) => ({
         loading: false,
         user: userResponse.data,
-      });
+      }));
     } catch (error) {
-      console.log("getUSerInformation -> error", error);
+      console.log("fetchUserInformation -> error", error);
     }
   }
-  // fetch readme data for repository
+  // Fetch readme data for repository
   async function fetchReadme() {
     try {
       const readmeResponse = await getReadme(userName, repository.name);
       setReadme(readmeResponse.data);
     } catch (error) {
-      console.log("getUSerInformation -> error", error);
+      console.log("fetchReadme -> error", error);
     }
   }
   useEffect(() => {
-    settUserInformation({
+    setUserInformation((userInformation) => ({
       ...userInformation,
       loading: true,
-    });
-    fetchUerInformation();
+    }));
+    fetchUserInformation();
     fetchReadme();
   }, []);
   let displayContent = [];

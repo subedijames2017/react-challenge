@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { ReactComponent as GithubLogo } from "../github.svg";
 import Repositories from "./Repositories";
@@ -25,10 +25,10 @@ function SearchPage() {
 
   const handelSearchRepostories = (event) => {
     event.preventDefault();
-    setSearchReposetories({
+    setSearchReposetories((searchReposetories) => ({
       ...searchReposetories,
       loading: true,
-    });
+    }));
     // Check if DOM is loading
     if (!loading) {
       getRepositories(searchString, sort, order, 1)
@@ -78,7 +78,7 @@ function SearchPage() {
           setSearchReposetories((searchReposetories) => ({
             ...searchReposetories,
             loading: false,
-            error: "error while geting reposetories",
+            error: "Error while getting reposetories",
           }));
         });
     }
