@@ -117,7 +117,7 @@ function SearchPage() {
   }
 
   return (
-    <div>
+    <div className="search-page">
       <GithubLogo className="banner-logo" />
       <h3 className="text-center text-info mt-3">Repository Finder</h3>
       <div className="loader">{loadingElement}</div>

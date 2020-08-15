@@ -15,11 +15,10 @@ function App() {
         <Route exact path="/" component={SearchPage} />
         <Route
           path={"/:login/"}
-          render={({ match, location, history }) => (
+          render={({ match, location }) => (
             <Details
               userName={match.params.login}
               repository={location.repository}
-              history={history}
             />
           )}
         />

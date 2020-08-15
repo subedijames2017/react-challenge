@@ -4,11 +4,12 @@ import { Spinner, Container, Col, Image, Row } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
-function Details({ userName, repository, history }) {
+function Details({ userName, repository }) {
   // Rendering user to search page if no reposetory information passed
-  if (!repository) {
+  const history = useHistory();
+  if (!repository || !userName) {
     history.push("/");
   }
   const [userInformation, setUserInformation] = useState({
@@ -115,7 +116,7 @@ function Details({ userName, repository, history }) {
       </Container>,
     ];
   }
-  return <div>{displayContent}</div>;
+  return <div className="detail-page">{displayContent}</div>;
 }
 // Using react memo to avoid multiple render
 export default React.memo(Details);
