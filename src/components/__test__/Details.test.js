@@ -4,7 +4,8 @@ import Adapter from "enzyme-adapter-react-16";
 import Details from "../Details";
 
 Enzyme.configure({ adapter: new Adapter() });
-// Test data for rendering detail page
+
+// Test data for rendering details page
 let userName = "node";
 let repository = {
   id: 27193779,

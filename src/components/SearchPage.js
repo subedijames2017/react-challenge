@@ -96,9 +96,18 @@ function SearchPage() {
       }
     }
   };
-
+  let sortOptions = [];
   let loadingElement = [];
   let loadMoreButton = [];
+  // options for sort selection
+  for (const key in Config.SORT_VALUES) {
+    if (Config.SORT_VALUES.hasOwnProperty(key)) {
+      sortOptions = [
+        ...sortOptions,
+        <option value={key}>{Config.SORT_VALUES[key]}</option>,
+      ];
+    }
+  }
   // Check if loading is enabled or not
   if (loading) {
     loadingElement = [
@@ -157,10 +166,7 @@ function SearchPage() {
                 onChange={(e) => setSort(e.target.value)}
               >
                 <option>Sort by</option>
-                <option value="stars">Star</option>
-                <option value="forks">Fork</option>
-                <option value="help-wanted-issues">Help wanted issue</option>
-                <option value="updated">Recently updated</option>
+                {sortOptions}
               </Form.Control>
             </Form.Group>
           </Col>

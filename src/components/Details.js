@@ -37,6 +37,7 @@ function Details({ userName, repository }) {
     }
   }
   // Fetch readme data for repository
+  // Using different function to fetch readme, because fetch readme fails with status 400 in case of no redme for a repository.
   async function fetchReadme() {
     try {
       const readmeResponse = await getReadme(userName, repository.name);
