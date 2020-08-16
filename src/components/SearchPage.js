@@ -202,10 +202,9 @@ function SearchPage() {
         )}
       </Form>
 
-      {searchRepositories.repositories &&
-        searchRepositories.repositories.map((repository, index) => (
-          <Repositories repository={repository} index={index} />
-        ))}
+      {repositories.map((repository, index) => (
+        <Repositories repository={repository} index={index} />
+      ))}
       <div className="load-more">{loadMoreButton}</div>
     </div>
   );
