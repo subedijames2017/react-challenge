@@ -104,7 +104,9 @@ function SearchPage() {
     if (Config.SORT_VALUES.hasOwnProperty(key)) {
       sortOptions = [
         ...sortOptions,
-        <option value={key}>{Config.SORT_VALUES[key]}</option>,
+        <option value={key} key={key}>
+          {Config.SORT_VALUES[key]}
+        </option>,
       ];
     }
   }
@@ -117,6 +119,7 @@ function SearchPage() {
         height="100"
         className="loader"
         aria-hidden="true"
+        key="spinner"
       />,
     ];
   }

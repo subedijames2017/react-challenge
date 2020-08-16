@@ -65,6 +65,7 @@ function Details({ userName, repository }) {
         variant="danger"
         className="loader"
         aria-hidden="true"
+        key="spinner"
       />,
     ];
   }
